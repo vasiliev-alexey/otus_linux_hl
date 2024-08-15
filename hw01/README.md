@@ -25,7 +25,7 @@
 
 2. Создаем Folder в облачном сервисе
 
-2. Создаем сервисвный аккаунт
+2. Создаем сервисный аккаунт
 
 ```sh
 yc iam service-account create --name otus-hl-sa
