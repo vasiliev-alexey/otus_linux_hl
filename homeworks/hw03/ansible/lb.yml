@@ -1,0 +1,35 @@
+---
+- name: Configure LB Server
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: latest
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+
+    - name: Template Nginx configuration for reverse proxy
+      template:
+        src: files/nginx.lb.conf.j2
+        dest: /etc/nginx/sites-enabled/reverse-proxy.conf
+
+    - name: Remove default Nginx site configuration
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Restart Nginx service to apply changes
+      ansible.builtin.service:
+        name: nginx
+        state: restarted

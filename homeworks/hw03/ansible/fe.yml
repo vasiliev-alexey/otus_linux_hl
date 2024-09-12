@@ -1,0 +1,62 @@
+---
+- name: Configure Frontend Server
+  hosts: all
+  become: yes
+
+
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: latest
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+
+    - name: Install unzip
+      apt:
+        name: unzip
+        state: latest
+
+
+    - name: Copy file for static and assets from S3 bucket
+      ansible.builtin.get_url:
+        url: https://storage.yandexcloud.net/artefacts-avdeploy/f1_v1.zip
+        dest: /tmp/fe.zip
+        mode: '0644'
+
+    - name: Creates directory for site
+      ansible.builtin.file:
+        path: /usr/local/fe
+        state: directory
+
+
+    - name: Extract static and assets to /usr/local/fe
+      ansible.builtin.unarchive:
+        src: /tmp/fe.zip
+        dest: /usr/local/fe
+        remote_src: yes
+
+    - name: Template Nginx configuration
+      template:
+        src: files/nginx.conf.j2
+        dest: /etc/nginx/sites-available/fe.conf
+
+
+    - name: Create a symbolic link
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/fe.conf
+        dest: /etc/nginx/sites-enabled/fe.conf
+        state: link
+
+    - name: Restart service nginx, in all cases
+      ansible.builtin.service:
+        name: nginx
+        state: restarted

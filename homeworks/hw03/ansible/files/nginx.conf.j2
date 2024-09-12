@@ -1,0 +1,25 @@
+server {
+    listen 80;
+    server_name {{ server_name }} 192.168.10.23; # Замените на ваше доменное имя или IP-адрес
+
+    root /usr/local/fe; # Укажите путь к папке build
+
+    index index.html index.htm;
+
+    location / {
+        # Пытаемся найти файл, если не находим, то возвращаем index.html
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Кэширование статических файлов
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, must-revalidate";
+    }
+
+    error_page 404 /index.html;
+
+    # Логи для отладки
+    access_log /var/log/nginx/react-app-access.log;
+    error_log /var/log/nginx/react-app-error.log;
+}

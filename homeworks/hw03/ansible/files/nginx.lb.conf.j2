@@ -1,0 +1,12 @@
+server {
+        listen 80;
+        listen [::]:80;
+        access_log /var/log/nginx/reverse-access.log;
+        error_log /var/log/nginx/reverse-error.log;
+        location / {
+                    proxy_pass http://192.168.10.23;
+  }
+       location /api {
+                   proxy_pass http://192.168.10.22:5001;
+}
+}
