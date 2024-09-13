@@ -4,4 +4,5 @@
 # Домашние задания по курсу  Otus Highload Infrastructure
 
 
-[01. Создать Terraform скрипт](./hw01/README.md)
+[01. Создать Terraform скрипт](./homeworks/hw01/README.md)  
+[03. Настраиваем балансировку веб-приложения](./homeworks/hw03/README.md)
